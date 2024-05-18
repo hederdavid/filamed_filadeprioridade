@@ -37,10 +37,11 @@ fun main() {
                 scanner.nextLine()
             }
         }
+        scanner.nextLine()
 
         when (opcaoEscolhida) {
             1 -> {
-                scanner.nextLine()
+
                 println("\n╔════════════════════════════════════════════╗")
                 println("║             Cadastrar Paciente             ║")
                 println("╚════════════════════════════════════════════╝")
@@ -90,37 +91,50 @@ fun main() {
             }
 
             2 -> {
-                scanner.nextLine() // Consumir a nova linha pendente
                 println("\n╔════════════════════════════════════════════╗")
-                println("║        🚑 Chamar Próximo Paciente          ║")
+                println("║           Chamar Próximo Paciente          ║")
                 println("╚════════════════════════════════════════════╝")
-                print("⚠️  Digite a classificação de risco (E - Emergência, V - Muito Urgente, U - Urgente, P - Pouco Urgente, N - Não Urgente) ou pressione Enter para selecionar automaticamente: ")
-                val riskClassification = scanner.nextLine().toUpperCase().firstOrNull()
+                print("⚠️ Digite 'AUTO' para selecionar automaticamente ou \n Digite a classificação de risco (R - Emergência, O - Muito Urgente, Y - Urgente, G - Pouco Urgente, B - Não Urgente): ")
+                val prioridadeEspecifica = scanner.next().uppercase(Locale.getDefault()).firstOrNull()
 
-                if (riskClassification != null) {
-
+                if (prioridadeEspecifica != null) {
+                    if (prioridadeEspecifica.equals('A', true)) {
+                        when(prioridadeEspecifica) {
+                            'R' -> println(fila.desenfileirar(5))
+                            'O' -> println(fila.desenfileirar(4))
+                            'Y' -> println(fila.desenfileirar(3))
+                            'G' -> println(fila.desenfileirar(2))
+                            'B' -> println(fila.desenfileirar(1))
+                            else -> println("Prioridade inválida!")
+                        }
+                    } else {
+                        println(fila.desenfileirar())
+                    }
                 } else {
-
+                    println(fila.desenfileirar())
                 }
             }
 
             3 -> {
-                scanner.nextLine() // Consumir a nova linha pendente
                 println("\n╔════════════════════════════════════════════╗")
                 println("║   ⏳ Verificar Iminência de Atendimento     ║")
                 println("╚════════════════════════════════════════════╝")
                 print("🆔  Digite o CPF do paciente: ")
                 val cpf = scanner.nextLine()
+                if (fila.espiar()?.cpf == cpf) {
+                    println("O paciente ${fila.espiar()?.nomeCompleto} de cpf ${fila.espiar()?.cpf }  é o próximo a ser " +
+                            "atendido.")
+                } else {
+                    println("O paciente do cpf $cpf, não é o próximo a ser atendido.")
+                }
 
             }
 
             4 -> {
-                scanner.nextLine() // Consumir a nova linha pendente
                 println("\n╔════════════════════════════════════════════╗")
-                println("║  📋 Consultar Próximo Paciente de uma Fila  ║")
+                println("║  📋 Dados do próximo paciente da Fila      ║")
                 println("╚════════════════════════════════════════════╝")
-                print("⚠️  Digite a classificação de risco (E - Emergência, V - Muito Urgente, U - Urgente, P - Pouco Urgente, N - Não Urgente): ")
-                val riskClassification = scanner.nextLine().toUpperCase().firstOrNull() ?: ' '
+                println(fila.espiar())
 
             }
 

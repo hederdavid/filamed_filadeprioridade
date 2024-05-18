@@ -6,9 +6,9 @@ data class Paciente(var nomeCompleto: String, var cpf: String, var sexo: Char, v
 
     var senha: String = ""
     override fun toString(): String {
-        return "Paciente(nomeCompleto='$nomeCompleto', cpf='$cpf', sexo=$sexo, dataNascimento=$dataNascimento," +
-                " relatoQueixasSintomas='$relatoQueixasSintomas', prioridade=$prioridade," +
-                " dataHoraEnfileiramento=$dataHoraEnfileiramento, senha=$senha)"
+        return "Nome Completo: $nomeCompleto, CPF:'$cpf', sexo: $sexo, Data de Nascimento: $dataNascimento," +
+                " Relato de queixas e/ou sintomas: $relatoQueixasSintomas, Prioridade=$prioridade," +
+                " Horario de enfileiramento: $dataHoraEnfileiramento, Senha: $senha)"
     }
 }
 
