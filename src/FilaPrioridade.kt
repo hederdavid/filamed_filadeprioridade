@@ -1,20 +1,35 @@
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Period
 
 class FilaPrioridade(private val tamanho: Int = 10): Enfileiravel {
 
     private var pacientes: Array<Paciente?> = arrayOfNulls(tamanho)
     private var ponteiroFim = -1
     private var quantidade = 0
+
     private var qtdPrioridadeEmergencia = 0
     private var qtdPrioridadeMuitaUrgencia = 0
     private var qtdPrioridadeUrgencia = 0
     private var qtdPrioridadePoucaUrgencia = 0
     private var qtdPrioridadeNaoUrgente = 0
 
+    private var qtdAtualPrioridadeEmergencia = 0
+    private var qtdAtualPrioridadeMuitaUrgencia = 0
+    private var qtdAtualPrioridadeUrgencia = 0
+    private var qtdAtualPrioridadePoucaUrgencia = 0
+    private var qtdAtualPrioridadeNaoUrgente = 0
+
+    private var qtdCriancas = 0
+    private var qtdAdolescentes = 0
+    private var qtdAdultos = 0
+    private var qtdIdosos = 0
+
     override fun enfileirar(paciente: Paciente) {
         if (!estaCheia()) {
             if (!isCpfCadastrado(paciente.cpf)) {
                 ponteiroFim++
+                acrescentarPacientesFaixaEtaria(paciente.dataNascimento)
                 paciente.senha = gerarSenhaDoPaciente(paciente.prioridade)
                 pacientes[ponteiroFim] = paciente
                 paciente.dataHoraEnfileiramento = LocalDateTime.now()
@@ -29,9 +44,12 @@ class FilaPrioridade(private val tamanho: Int = 10): Enfileiravel {
     }
 
     override fun desenfileirar(): Paciente? {
-        var dadoRaiz: Paciente? = null
+        var pacienteDesenfileirado: Paciente? = null
         if (!estaVazia()) {
-            dadoRaiz = pacientes[0]
+            pacienteDesenfileirado = pacientes[0]
+            pacienteDesenfileirado!!.dataHoraDesenfileiramento = LocalDateTime.now()
+            subtrairPacientesFaixaEtaria(pacienteDesenfileirado.dataNascimento)
+            subtrairPacientesPorPrioridade(pacienteDesenfileirado.prioridade)
             pacientes[0] = pacientes[ponteiroFim]
             ponteiroFim--
             ajustarAbaixo(0)
@@ -39,7 +57,7 @@ class FilaPrioridade(private val tamanho: Int = 10): Enfileiravel {
         } else {
             println("Fila de Prioridades Vazia!")
         }
-        return dadoRaiz
+        return pacienteDesenfileirado
     }
 
     fun desenfileirar(prioridade: Int): Paciente? {
@@ -47,6 +65,9 @@ class FilaPrioridade(private val tamanho: Int = 10): Enfileiravel {
         var indiceRemocao: Int = 0
         if (!estaVazia()) {
             pacienteDesenfileirado = chamarPrimeiroPrioridade(prioridade)
+            pacienteDesenfileirado!!.dataHoraDesenfileiramento = LocalDateTime.now()
+            subtrairPacientesFaixaEtaria(pacienteDesenfileirado.dataNascimento)
+            subtrairPacientesPorPrioridade(pacienteDesenfileirado.prioridade)
             for (i in 0 ..< quantidade) {
                 if (pacientes[i]!! == pacienteDesenfileirado) {
                     indiceRemocao = i
@@ -206,31 +227,94 @@ class FilaPrioridade(private val tamanho: Int = 10): Enfileiravel {
         return when (prioridade) {
             5 -> {
                 qtdPrioridadeEmergencia++
-                "R$qtdPrioridadeEmergencia"
+                qtdAtualPrioridadeEmergencia++
+                "R-$qtdPrioridadeEmergencia"
             }
 
             4 -> {
                 qtdPrioridadeMuitaUrgencia++
-                "O$qtdPrioridadeMuitaUrgencia"
+                qtdAtualPrioridadeMuitaUrgencia++
+                "O-$qtdPrioridadeMuitaUrgencia"
             }
 
             3 -> {
                 qtdPrioridadeUrgencia++
-                "Y$qtdPrioridadeUrgencia"
+                qtdAtualPrioridadeUrgencia++
+                "Y-$qtdPrioridadeUrgencia"
             }
 
             2 -> {
                 qtdPrioridadePoucaUrgencia++
-                "G$qtdPrioridadePoucaUrgencia"
+                qtdAtualPrioridadePoucaUrgencia++
+                "G-$qtdPrioridadePoucaUrgencia"
             }
 
             1 -> {
                 qtdPrioridadeNaoUrgente++
-                "B$qtdPrioridadeNaoUrgente"
+                qtdAtualPrioridadeNaoUrgente++
+                "B-$qtdPrioridadeNaoUrgente"
             }
 
             else -> "SENHA NÃO DEFINIDA"
         }
+    }
+
+    private fun subtrairPacientesPorPrioridade(prioridade: Int) {
+        when (prioridade) {
+            5 -> qtdAtualPrioridadeEmergencia--
+            4 -> qtdAtualPrioridadeMuitaUrgencia--
+            3 -> qtdAtualPrioridadeUrgencia--
+            2 -> qtdAtualPrioridadePoucaUrgencia--
+            1 -> qtdAtualPrioridadeNaoUrgente--
+        }
+    }
+
+    fun consultarQuantidadeAtualPacientesPorPrioridade() {
+        println("\uD83D\uDFE5Emergência: $qtdAtualPrioridadeEmergencia")
+        println("\uD83D\uDFE7Muita urgência: $qtdAtualPrioridadeMuitaUrgencia")
+        println("\uD83D\uDFE8Urgência: $qtdAtualPrioridadeUrgencia")
+        println("\uD83D\uDFE9Pouca urgência: $qtdAtualPrioridadePoucaUrgencia")
+        println("\uD83D\uDFE6Não urgênte: $qtdAtualPrioridadeNaoUrgente")
+    }
+
+    private fun acrescentarPacientesFaixaEtaria(dataNascimento: LocalDate) {
+        val idade = calcularIdade(dataNascimento)
+        if (idade in 0..11) {
+            qtdCriancas++
+        } else if (idade in 12..17) {
+            qtdAdolescentes++
+        } else if (idade in 18..59) {
+            qtdAdultos++
+        } else if (idade >= 60) {
+            qtdIdosos++
+        }
+    }
+
+    private fun subtrairPacientesFaixaEtaria(dataNascimento: LocalDate) {
+        val idade = calcularIdade(dataNascimento)
+        if (idade in 0..11) {
+            qtdCriancas--
+        } else if (idade in 12..17) {
+            qtdAdolescentes--
+        } else if (idade in 18..59) {
+            qtdAdultos--
+        } else if (idade >= 60) {
+            qtdIdosos--
+        }
+    }
+
+    private fun calcularIdade(dataNascimento: LocalDate): Int {
+        val dataAtual: LocalDate = LocalDate.now()
+        val periodo: Period = Period.between(dataNascimento, dataAtual)
+        val idade: Int = periodo.years
+        return idade
+    }
+
+    fun consultarQuantidadeAtualPacientesPorFaixaEtaria() {
+        println("Crianças: $qtdCriancas")
+        println("Adolescentes: $qtdAdolescentes")
+        println("Adultos: $qtdAdultos")
+        println("Idosos: $qtdIdosos")
     }
 
     override fun toString(): String {

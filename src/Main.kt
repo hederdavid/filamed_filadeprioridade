@@ -1,3 +1,4 @@
+import java.lang.Thread.sleep
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -6,8 +7,11 @@ import java.util.*
 
 fun main() {
     val scanner = Scanner(System.`in`)
-    val fila = FilaPrioridade(10)
+    val fila = FilaPrioridade(50)
     var opcaoEscolhida = 0
+
+    val enfileirarPacientes = PacientesParaTestes()
+    enfileirarPacientes.enfileirarPacientesTestes(fila)
 
     while (true) {
         println("\n╔═══════════════════════════════════════════════════════════════╗")
@@ -86,7 +90,7 @@ fun main() {
 
                 fila.enfileirar(Paciente(nomeCompleto, cpf, sexo, dataNascimento, relatoQueixaSintomas, prioridade,
                     LocalDateTime.now()))
-                println(fila.espiar())
+
                 println("\n ✅ Paciente $nomeCompleto cadastrado com sucesso ")
             }
 
@@ -94,24 +98,17 @@ fun main() {
                 println("\n╔════════════════════════════════════════════╗")
                 println("║           Chamar Próximo Paciente          ║")
                 println("╚════════════════════════════════════════════╝")
-                print("⚠️ Digite 'AUTO' para selecionar automaticamente ou \n Digite a classificação de risco (R - Emergência, O - Muito Urgente, Y - Urgente, G - Pouco Urgente, B - Não Urgente): ")
-                val prioridadeEspecifica = scanner.next().uppercase(Locale.getDefault()).firstOrNull()
+                print("⚠️ Digite '0' para selecionar automaticamente ou \n Digite a classificação de risco (5 - Emergência, 4 - Muito Urgente, 3 - Urgente, 2 - Pouco Urgente, 1 - Não Urgente): ")
+                val prioridadeEspecifica = scanner.nextInt()
 
-                if (prioridadeEspecifica != null) {
-                    if (prioridadeEspecifica.equals('A', true)) {
-                        when(prioridadeEspecifica) {
-                            'R' -> println(fila.desenfileirar(5))
-                            'O' -> println(fila.desenfileirar(4))
-                            'Y' -> println(fila.desenfileirar(3))
-                            'G' -> println(fila.desenfileirar(2))
-                            'B' -> println(fila.desenfileirar(1))
-                            else -> println("Prioridade inválida!")
-                        }
-                    } else {
-                        println(fila.desenfileirar())
-                    }
-                } else {
-                    println(fila.desenfileirar())
+                when(prioridadeEspecifica) {
+                    5 -> println(fila.desenfileirar(5))
+                    4 -> println(fila.desenfileirar(4))
+                    3 -> println(fila.desenfileirar(3))
+                    2 -> println(fila.desenfileirar(2))
+                    1 -> println(fila.desenfileirar(1))
+                    0 -> println(fila.desenfileirar())
+                    else -> println("Prioridade inválida!")
                 }
             }
 
@@ -132,21 +129,47 @@ fun main() {
 
             4 -> {
                 println("\n╔════════════════════════════════════════════╗")
-                println("║  📋 Dados do próximo paciente da Fila      ║")
+                println("║     Dados do próximo paciente da Fila      ║")
                 println("╚════════════════════════════════════════════╝")
                 println(fila.espiar())
 
             }
 
             5 -> {
-                println("\n╔════════════════════════════════════════════╗")
-                println("║        📊 Consultar Estatísticas           ║")
-                println("╚════════════════════════════════════════════╝")
+                var opcaoEscolhidaEstatisticas = 0
+                println("\n╔════════════════════════════════════════════════════════════════════════════╗")
+                println("║                           Consultar Estatísticas                           ║")
+                println("╠════════════════════════════════════════════════════════════════════════════╣")
+                println("║     1.  Quantidade atual de pacientes na fila por prioridade               ║")
+                println("║     2.  Quantidade atual de pacientes na fila por faixa etária             ║")
+                println("║     3.  Tempo médio de permanência em fila de atendimento                  ║")
+                println("║     4.  Percentual de pacientes, entre aqueles atendidos e em cada fila de ║")
+                println("║       atendimento, em tempo inferior ao tempo de espera recomendado        ║")
+                println("║       para sua classificação de risco                                      ║")
+                println("╚════════════════════════════════════════════════════════════════════════════╝")
 
+                while (true) {
+                    try {
+                        print("🅾️Opção: ")
+                        opcaoEscolhidaEstatisticas = scanner.nextInt()
+                        break
+                    } catch (e: InputMismatchException) {
+                        println("❌ Insira uma opção válida!")
+                        scanner.nextLine()
+                    }
+                }
+                scanner.nextLine()
+                when (opcaoEscolhidaEstatisticas) {
+                    1 -> fila.consultarQuantidadeAtualPacientesPorPrioridade()
+
+                    2 -> fila.consultarQuantidadeAtualPacientesPorFaixaEtaria()
+                }
             }
 
             6 -> {
-                println("\n👋 Saindo do sistema... Até logo!")
+                println("\n👋 Saindo do sistema...")
+                sleep(2000)
+                println("Sistema encerrado.")
                 break
             }
 
@@ -158,35 +181,7 @@ fun main() {
 
 
     /*val fila = FilaPrioridade(10)
-    fila.enfileirar(Paciente("Ana Silva", "123.456.789-00", 'F', LocalDate.of(1990, 5, 10),
-        "Dor de cabeça", 2, LocalDateTime.now()))
-    sleep(1000)
-    fila.enfileirar(Paciente("Bruno Santos", "987.654.321-11", 'M', LocalDate.of(1985, 8, 22),
-        "Febre alta", 1, LocalDateTime.now()))
-    sleep(200)
-    fila.enfileirar(Paciente("Carlos Souza", "456.789.123-22", 'M', LocalDate.of(1978, 3, 15),
-        "Dor abdominal", 3, LocalDateTime.now()))
-    sleep(200)
-    fila.enfileirar(Paciente("Daniela Lima", "321.654.987-33", 'F', LocalDate.of(1995, 12, 30),
-        "Tontura", 2, LocalDateTime.now()))
-    sleep(200)
-    fila.enfileirar(Paciente("Eduardo Almeida", "654.321.987-44", 'M', LocalDate.of(1980, 7, 17),
-        "Dor no peito", 1, LocalDateTime.now()))
-    sleep(200)
-    fila.enfileirar(Paciente("Fernanda Costa", "789.123.456-55", 'F', LocalDate.of(2000, 1, 5),
-        "Fadiga", 3, LocalDateTime.now()))
-    sleep(200)
-    fila.enfileirar(Paciente("Gustavo Pereira", "147.258.369-66", 'M', LocalDate.of(1992, 6, 25),
-        "Náusea", 2, LocalDateTime.now()))
-    sleep(200)
-    fila.enfileirar(Paciente("Helena Rocha", "258.369.147-77", 'F', LocalDate.of(1988, 9, 18),
-        "Tosse", 3, LocalDateTime.now()))
-    sleep(200)
-    fila.enfileirar(Paciente("Igor Oliveira", "369.147.258-88", 'M', LocalDate.of(1993, 4, 21),
-        "Dificuldade para respirar", 1, LocalDateTime.now()))
-    sleep(200)
-    fila.enfileirar(Paciente("Julia Ribeiro", "159.753.486-99", 'F', LocalDate.of(1975, 11, 11),
-        "Dor nas costas", 2, LocalDateTime.now()))
+
     println(fila.imprimir())
     println(fila.desenfileirar())
     println(fila.desenfileirar(1))

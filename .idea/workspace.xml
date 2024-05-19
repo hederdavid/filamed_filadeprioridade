@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59cca490-b5e3-4fef-b704-35f7665777e1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/PacientesParaTestes.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FilaPrioridade.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/FilaPrioridade.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Paciente.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Paciente.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +71,10 @@
       <workItem from="1715968170761" duration="2768000" />
       <workItem from="1715972303994" duration="5291000" />
       <workItem from="1715982716267" duration="1597000" />
-      <workItem from="1716071710795" duration="339000" />
+      <workItem from="1716071710795" duration="1261000" />
+      <workItem from="1716126275812" duration="3841000" />
+      <workItem from="1716133941673" duration="1838000" />
+      <workItem from="1716153216307" duration="2733000" />
     </task>
     <servers />
   </component>
@@ -82,12 +86,17 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="kotlin-function">
           <url>file://$PROJECT_DIR$/src/FilaPrioridade.kt</url>
-          <line>187</line>
+          <line>206</line>
           <properties class="FilaPrioridade" method="chamarPrimeiroPrioridade">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
           <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/Main.kt</url>
+          <line>13</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
