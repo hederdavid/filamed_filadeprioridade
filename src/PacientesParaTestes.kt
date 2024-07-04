@@ -35,7 +35,7 @@ class PacientesParaTestes {
             fila.enfileirar(paciente)
             println("${i + 1} pacientes enfileirados...")
 
-            // Simulando o tempo de espera entre as enfileirações
+            // Tempo para que as enfileirações possam ser comparadas de quem chegou primeiro, por exemplo
             Thread.sleep(100)
         }
     }
